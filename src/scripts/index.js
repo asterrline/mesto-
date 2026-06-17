@@ -8,7 +8,6 @@
 
 
 import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, setLikeOnServer, removeLikeFromServer } from "./components/api.js";
-import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar } from "./components/api.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 import { createCardElement, createCardElementWithInfo, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
