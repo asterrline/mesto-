@@ -43,12 +43,30 @@ export const createCardElement = (
 
 export const createCardElementWithInfo = (
   data,
-  { onPreviewPicture, onLikeIcon, onDeleteCard, onInfoClick }
+  { onPreviewPicture, onLikeIcon, onDeleteCard, onInfoClick },
+  userId
 ) => {
   const cardElement = createCardElement(data, { onPreviewPicture, onLikeIcon, onDeleteCard });
   
   const infoButton = cardElement.querySelector(".card__control-button_type_info");
-  
+  const deleteButton = cardElement.querySelector(".card__control-button_type_delete");
+  const likeButton = cardElement.querySelector(".card__like-button");
+  const likeCounter = cardElement.querySelector(".card__like-count");
+
+  if (likeCounter && data.likes) {
+    likeCounter.textContent = data.likes.length;
+  }
+
+  if (data.likes && userId && data.likes.some(user => user._id === userId)) {
+    likeButton.classList.add("card__like-button_is-active");
+  }
+
+  if (data.owner && userId && data.owner._id !== userId) {
+    if (deleteButton) {
+      deleteButton.remove();
+    }
+  }
+
   if (infoButton && onInfoClick) {
     infoButton.addEventListener("click", function() {
       onInfoClick(data._id || data.id);
