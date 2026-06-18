@@ -82,21 +82,3 @@ export function clearValidation(formElement, settings) {
   buttonElement.classList.add(settings.inactiveButtonClass);
   buttonElement.disabled = true;
 }
-
-function disableSubmitButton(buttonElement, settings) {
-  buttonElement.classList.add(settings.inactiveButtonClass);
-  buttonElement.disabled = true;
-}
-
-function enableSubmitButton(buttonElement, settings) {
-  buttonElement.classList.remove(settings.inactiveButtonClass);
-  buttonElement.disabled = false;
-}
-
-function toggleButtonState(inputList, buttonElement, settings) {
-  if (hasInvalidInput(inputList)) {
-    disableSubmitButton(buttonElement, settings);
-  } else {
-    enableSubmitButton(buttonElement, settings);
-  }
-}
