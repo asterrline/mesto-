@@ -58,6 +58,15 @@ const handlePreviewPicture = ({ name, link }) => {
   openModalWindow(imageModalWindow);
 };
 
+const createInfoItem = (labelText, valueText) => {
+  const item = document.createElement("li");
+  const label = document.createElement("span");
+  label.className = "popup__info-label";
+  label.textContent = labelText;
+  item.append(label, ` ${valueText}`);
+  return item;
+};
+
 const handleCardInfoClick = (cardId) => {
   getCardList()
     .then((cards) => {
@@ -74,22 +83,19 @@ const handleCardInfoClick = (cardId) => {
         year: "numeric",
       });
 
-      const descriptionItem = document.createElement("li");
-      descriptionItem.innerHTML = `<span class="popup__info-label">Описание:</span> ${targetCard.name || '—'}`;
 
-      const dateListItem = document.createElement("li");
-      dateListItem.innerHTML = `<span class="popup__info-label">Дата создания:</span> ${formattedDate}`;
 
-      const ownerItem = document.createElement("li");
+      const descriptionItem = createInfoItem("Описание:", targetCard.name || "—");
+      const dateListItem = createInfoItem("Дата создания:", formattedDate);
       const ownerName = targetCard.owner ? targetCard.owner.name : "Неизвестен";
-      ownerItem.innerHTML = `<span class="popup__info-label">Владелец:</span> ${ownerName}`;
-
-      const likesCountItem = document.createElement("li");
+      const ownerItem = createInfoItem("Владелец:", ownerName);
       const likesCount = targetCard.likes ? targetCard.likes.length : 0;
-      likesCountItem.innerHTML = `<span class="popup__info-label">Количество лайков:</span> ${likesCount}`;
+      const likesCountItem = createInfoItem("Количество лайков:", likesCount);
 
       const likedByTitleItem = document.createElement("li");
-      likedByTitleItem.innerHTML = `<strong>Лайкнули:</strong>`;
+      const likedByStrong = document.createElement("strong");
+      likedByStrong.textContent = "Лайкнули:";
+      likedByTitleItem.append(likedByStrong);
       
       const likedByListWrapper = document.createElement("li");
       if (targetCard.likes && targetCard.likes.length > 0) {
