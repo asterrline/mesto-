@@ -93,10 +93,14 @@ const handleCardInfoClick = (cardId) => {
       
       const likedByListWrapper = document.createElement("li");
       if (targetCard.likes && targetCard.likes.length > 0) {
-        const usersHtml = targetCard.likes
-          .map(user => `<span class="popup__info-user">${user.name}</span>`)
-          .join(" ");
-        likedByListWrapper.innerHTML = usersHtml;
+        targetCard.likes.forEach((user) => {
+          const userElement = document.createElement("span");
+          
+          userElement.classList.add("popup__info-user");
+          userElement.textContent = user.name;
+
+          likedByListWrapper.append(userElement);
+        });
       } else {
         likedByListWrapper.textContent = "Пока никто не лайкнул";
       }
@@ -185,6 +189,9 @@ const handleAvatarFromSubmit = (evt) => {
   updateUserAvatar(avatarInput.value)
     .then((updatedData) => {
       profileAvatar.style.backgroundImage = `url(${updatedData.avatar})`;
+
+      avatarForm.reset();
+      
       closeModalWindow(avatarFormModalWindow);
     })
     .catch((err) => {
@@ -213,6 +220,9 @@ const handleCardFormSubmit = (evt) => {
           }
         )
       );
+
+      cardForm.reset();
+      
       closeModalWindow(cardFormModalWindow);
     })
     .catch((err) => {
