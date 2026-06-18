@@ -4,13 +4,21 @@ function hasInvalidInput(inputList) {
   });
 }
 
+function disableSubmitButton(buttonElement, settings) {
+  buttonElement.classList.add(settings.inactiveButtonClass);
+  buttonElement.disabled = true;
+}
+
+function enableSubmitButton(buttonElement, settings) {
+  buttonElement.classList.remove(settings.inactiveButtonClass);
+  buttonElement.disabled = false;
+}
+
 function toggleButtonState(inputList, buttonElement, settings) {
   if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add(settings.inactiveButtonClass);
-    buttonElement.disabled = true;
+    disableSubmitButton(buttonElement, settings);
   } else {
-    buttonElement.classList.remove(settings.inactiveButtonClass);
-    buttonElement.disabled = false;
+    enableSubmitButton(buttonElement, settings);
   }
 }
 
@@ -46,7 +54,7 @@ function checkInputValidity(formElement, inputElement, settings) {
   }
 }
 
-function setFormEventListeners(formElement, settings) {
+function setEventListeners(formElement, settings) {
   const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
   const buttonElement = formElement.querySelector(settings.submitButtonSelector);
   
@@ -66,7 +74,7 @@ export function enableValidation(settings) {
     formElement.addEventListener("submit", function (evt) {
       evt.preventDefault();
     });
-    setFormEventListeners(formElement, settings);
+    setEventListeners(formElement, settings);
   });
 }
 
@@ -79,6 +87,5 @@ export function clearValidation(formElement, settings) {
     inputElement.setCustomValidity("");
   });
   
-  buttonElement.classList.add(settings.inactiveButtonClass);
-  buttonElement.disabled = true;
+  disableSubmitButton(buttonElement, settings);
 }
