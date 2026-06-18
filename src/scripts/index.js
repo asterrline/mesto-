@@ -6,7 +6,7 @@
   Из index.js не допускается что то экспортировать
 */
 
-
+import "../pages/index.css";
 import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, setLikeOnServer, removeLikeFromServer } from "./components/api.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 import { createCardElement, createCardElementWithInfo, deleteCard, likeCard } from "./components/card.js";
