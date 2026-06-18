@@ -7,7 +7,7 @@
 */
 
 import "../pages/index.css";
-import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, setLikeOnServer, removeLikeFromServer } from "./components/api.js";
+import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, changeLikeCardStatus } from "./components/api.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 import { createCardElement, createCardElementWithInfo, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
@@ -127,13 +127,18 @@ const renderLoading = (isLoading, buttonElement, defaultText = "Сохранит
 };
 
 const handleLikeClick = (likeButton, cardId) => {
-  const isLiked = likeButton.classList.contains("card__like-button_is-active");
-  const likeMethod = isLiked ? removeLikeFromServer : setLikeOnServer;
+  const isLiked = likeButton.classList.contains(
+    "card__like-button_is-active"
+  );
 
-  likeMethod(cardId)
+  changeLikeCardStatus(cardId, isLiked)
     .then((updatedCardData) => {
       likeCard(likeButton);
-      const likeCounter = likeButton.closest(".card").querySelector(".card__like-count");
+
+      const likeCounter = likeButton
+        .closest(".card")
+        .querySelector(".card__like-count");
+
       if (likeCounter) {
         likeCounter.textContent = updatedCardData.likes.length;
       }
