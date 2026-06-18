@@ -8,7 +8,7 @@ export const deleteCard = (cardElement) => {
 
 const getTemplate = () => {
   return document
-    .getElementById("card-template")
+    .querySelector("#card-template")
     .content.querySelector(".card")
     .cloneNode(true);
 };
