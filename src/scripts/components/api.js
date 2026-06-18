@@ -48,16 +48,9 @@ export const deleteCardFromServer = (cardId) => {
   }).then(getResponseData);
 };
 
-export const setLikeOnServer = (cardId) => {
+export const changeLikeCardStatus = (cardId, isLiked) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-    method: "PUT",
-    headers: config.headers,
-  }).then(getResponseData);
-};
-
-export const removeLikeFromServer = (cardId) => {
-  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-    method: "DELETE",
+    method: isLiked ? "DELETE" : "PUT",
     headers: config.headers,
   }).then(getResponseData);
 };
