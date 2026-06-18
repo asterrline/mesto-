@@ -74,10 +74,42 @@ const handleCardInfoClick = (cardId) => {
         year: "numeric",
       });
 
-      const dateListItem = document.createElement("li");
-      dateListItem.textContent = `Дата создания: ${formattedDate}`;
+      const descriptionItem = document.createElement("li");
+      descriptionItem.innerHTML = `<span class="popup__info-label">Описание:</span> ${targetCard.name || '—'}`;
 
-      cardInfoModalInfoList.append(dateListItem);
+      const dateListItem = document.createElement("li");
+      dateListItem.innerHTML = `<span class="popup__info-label">Дата создания:</span> ${formattedDate}`;
+
+      const ownerItem = document.createElement("li");
+      const ownerName = targetCard.owner ? targetCard.owner.name : "Неизвестен";
+      ownerItem.innerHTML = `<span class="popup__info-label">Владелец:</span> ${ownerName}`;
+
+      const likesCountItem = document.createElement("li");
+      const likesCount = targetCard.likes ? targetCard.likes.length : 0;
+      likesCountItem.innerHTML = `<span class="popup__info-label">Количество лайков:</span> ${likesCount}`;
+
+      const likedByTitleItem = document.createElement("li");
+      likedByTitleItem.innerHTML = `<strong>Лайкнули:</strong>`;
+      
+      const likedByListWrapper = document.createElement("li");
+      if (targetCard.likes && targetCard.likes.length > 0) {
+        const usersHtml = targetCard.likes
+          .map(user => `<span class="popup__info-user">${user.name}</span>`)
+          .join(" ");
+        likedByListWrapper.innerHTML = usersHtml;
+      } else {
+        likedByListWrapper.textContent = "Пока никто не лайкнул";
+      }
+
+      cardInfoModalInfoList.append(
+        descriptionItem,
+        dateListItem,
+        ownerItem,
+        likesCountItem,
+        document.createElement("br"),
+        likedByTitleItem,
+        likedByListWrapper
+      );
 
       openModalWindow(cardInfoModalWindow);
     })
