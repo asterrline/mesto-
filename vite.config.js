@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/mesto-/',
+  base: './',
+  server: {
+    open: true,
+  },
 });
