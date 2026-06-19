@@ -186,13 +186,17 @@
 
     <template id="popup-info-definition-template">
       <div class="popup__info-item">
-        <dt class="popup__info-term"></dt>
-        <dd class="popup__info-description"></dd>
+        <dt class="popup__info-term" style="display: inline; font-weight: bold;"></dt>
+        <dd class="popup__info-description" style="display: inline; margin-left: 8px;"></dd>
       </div>
     </template>
 
     <template id="popup-info-user-preview-template">
       <li class="popup__list-item popup__list-item_type_badge"></li>
+    </template>
+
+    <template id="popup-info-no-likes-template">
+      <li style="color: #666; list-style: none;">Пока никто не лайкнул</li>
     </template>
   </body>
 </html>
