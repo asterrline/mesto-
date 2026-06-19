@@ -8,7 +8,7 @@
 
 import "../pages/index.css";
 import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, changeLikeCardStatus } from "./components/api.js";
-import { enableValidation, clearValidation } from "./components/validation.js";
+import { enableValidation, clearValidation, showInputError } from "./components/validation.js";
 import { createCardElement, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 
