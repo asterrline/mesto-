@@ -1,18 +1,17 @@
+const renderLikesState = (likeButton, likeCounter, likesData, userId) => {
+  if (likeCounter && likesData) {
+    likeCounter.textContent = likesData.length;
+  }
+  
+  const isLikedByMe = likesData?.some(user => user._id === userId) ?? false;
+  likeButton.classList.toggle("card__like-button_is-active", isLikedByMe);
+};
+
 export const likeCard = (cardElement, updatedCardData, userId) => {
   const likeButton = cardElement.querySelector(".card__like-button");
   const likeCounter = cardElement.querySelector(".card__like-count");
-
-  if (likeCounter && updatedCardData.likes) {
-    likeCounter.textContent = updatedCardData.likes.length;
-  }
-
-  const isLikedByMe = updatedCardData.likes.some(user => user._id === userId);
   
-  if (isLikedByMe) {
-    likeButton.classList.add("card__like-button_is-active");
-  } else {
-    likeButton.classList.remove("card__like-button_is-active");
-  }
+  renderLikesState(likeButton, likeCounter, updatedCardData.likes, userId);
 };
 
 export const deleteCard = (cardElement) => {
@@ -21,7 +20,7 @@ export const deleteCard = (cardElement) => {
 
 const getTemplate = () => {
   return document
-    .querySelector("#card-template")
+    .querySelector("#card-template") // Используем селектор id, как в html
     .content.querySelector(".card")
     .cloneNode(true);
 };
@@ -42,18 +41,10 @@ export const createCardElement = (
   cardImage.alt = data.name;
   cardElement.querySelector(".card__title").textContent = data.name;
 
-  if (likeCounter && data.likes) {
-    likeCounter.textContent = data.likes.length;
-  }
-
-  if (data.likes && userId && data.likes.some(user => user._id === userId)) {
-    likeButton.classList.add("card__like-button_is-active");
-  }
+  renderLikesState(likeButton, likeCounter, data.likes, userId);
 
   if (data.owner && userId && data.owner._id !== userId) {
-    if (deleteButton) {
-      deleteButton.remove();
-    }
+    deleteButton?.remove();
   }
 
   if (onLikeIcon) {
@@ -61,17 +52,15 @@ export const createCardElement = (
   }
 
   if (onDeleteCard) {
-    deleteButton.addEventListener("click", () => onDeleteCard(cardElement));
+    deleteButton?.addEventListener("click", () => onDeleteCard(cardElement));
   }
 
   if (onPreviewPicture) {
     cardImage.addEventListener("click", () => onPreviewPicture({ name: data.name, link: data.link }));
   }
 
-  if (infoButton && onInfoClick) {
-    infoButton.addEventListener("click", () => {
-      onInfoClick(data._id || data.id);
-    });
+  if (onInfoClick) {
+    infoButton?.addEventListener("click", () => onInfoClick(data._id || data.id));
   }
 
   return cardElement;
