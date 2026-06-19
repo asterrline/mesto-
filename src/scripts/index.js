@@ -9,7 +9,7 @@
 import "../pages/index.css";
 import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, changeLikeCardStatus } from "./components/api.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
-import { createCardElement, createCardElementWithInfo, deleteCard, likeCard } from "./components/card.js";
+import { createCardElement, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 
 // DOM узлы
@@ -40,7 +40,11 @@ const avatarForm = avatarFormModalWindow.querySelector(".popup__form");
 const avatarInput = avatarForm.querySelector(".popup__input");
 
 const cardInfoModalWindow = document.querySelector(".popup_type_info");
-const cardInfoModalInfoList = cardInfoModalWindow ? cardInfoModalWindow.querySelector(".popup__info-list") : null;
+const infoDescription = cardInfoModalWindow.querySelector(".popup__info-description");
+const infoDate = cardInfoModalWindow.querySelector(".popup__info-date");
+const infoOwner = cardInfoModalWindow.querySelector(".popup__info-owner");
+const infoLikesCount = cardInfoModalWindow.querySelector(".popup__info-likes-count");
+const infoLikedByList = cardInfoModalWindow.querySelector(".popup__info-liked-by");
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -58,23 +62,11 @@ const handlePreviewPicture = ({ name, link }) => {
   openModalWindow(imageModalWindow);
 };
 
-const createInfoItem = (labelText, valueText) => {
-  const item = document.createElement("li");
-  const label = document.createElement("span");
-  label.className = "popup__info-label";
-  label.textContent = labelText;
-  item.append(label, ` ${valueText}`);
-  return item;
-};
-
 const handleCardInfoClick = (cardId) => {
   getCardList()
     .then((cards) => {
       const targetCard = cards.find(item => (item._id === cardId || item.id === cardId));
-      
       if (!targetCard) return;
-
-      cardInfoModalInfoList.textContent = "";
 
       const dateObj = new Date(targetCard.createdAt || Date.now());
       const formattedDate = dateObj.toLocaleDateString("ru-RU", {
@@ -83,43 +75,18 @@ const handleCardInfoClick = (cardId) => {
         year: "numeric",
       });
 
+      if (infoDescription) infoDescription.textContent = targetCard.name || "—";
+      if (infoDate) infoDate.textContent = formattedDate;
+      if (infoOwner) infoOwner.textContent = targetCard.owner ? targetCard.owner.name : "Неизвестен";
+      if (infoLikesCount) infoLikesCount.textContent = targetCard.likes ? targetCard.likes.length : 0;
 
-
-      const descriptionItem = createInfoItem("Описание:", targetCard.name || "—");
-      const dateListItem = createInfoItem("Дата создания:", formattedDate);
-      const ownerName = targetCard.owner ? targetCard.owner.name : "Неизвестен";
-      const ownerItem = createInfoItem("Владелец:", ownerName);
-      const likesCount = targetCard.likes ? targetCard.likes.length : 0;
-      const likesCountItem = createInfoItem("Количество лайков:", likesCount);
-
-      const likedByTitleItem = document.createElement("li");
-      const likedByStrong = document.createElement("strong");
-      likedByStrong.textContent = "Лайкнули:";
-      likedByTitleItem.append(likedByStrong);
-      
-      const likedByListWrapper = document.createElement("li");
-      if (targetCard.likes && targetCard.likes.length > 0) {
-        targetCard.likes.forEach((user) => {
-          const userElement = document.createElement("span");
-          
-          userElement.classList.add("popup__info-user");
-          userElement.textContent = user.name;
-
-          likedByListWrapper.append(userElement);
-        });
-      } else {
-        likedByListWrapper.textContent = "Пока никто не лайкнул";
+      if (infoLikedByList) {
+        if (targetCard.likes && targetCard.likes.length > 0) {
+          infoLikedByList.textContent = targetCard.likes.map(user => user.name).join(", ");
+        } else {
+          infoLikedByList.textContent = "Пока никто не лайкнул";
+        }
       }
-
-      cardInfoModalInfoList.append(
-        descriptionItem,
-        dateListItem,
-        ownerItem,
-        likesCountItem,
-        document.createElement("br"),
-        likedByTitleItem,
-        likedByListWrapper
-      );
 
       openModalWindow(cardInfoModalWindow);
     })
@@ -136,22 +103,14 @@ const renderLoading = (isLoading, buttonElement, defaultText = "Сохранит
   }
 };
 
-const handleLikeClick = (likeButton, cardId) => {
-  const isLiked = likeButton.classList.contains(
-    "card__like-button_is-active"
-  );
+const handleLikeClick = (likeButton, cardId, userId) => {
+  const isLiked = likeButton.classList.contains("card__like-button_is-active");
 
   changeLikeCardStatus(cardId, isLiked)
     .then((updatedCardData) => {
-      likeCard(likeButton);
-
-      const likeCounter = likeButton
-        .closest(".card")
-        .querySelector(".card__like-count");
-
-      if (likeCounter) {
-        likeCounter.textContent = updatedCardData.likes.length;
-      }
+      const cardElement = likeButton.closest(".card");
+      
+      likeCard(cardElement, updatedCardData, userId);
     })
     .catch((err) => {
       console.error(err);
@@ -195,8 +154,6 @@ const handleAvatarFromSubmit = (evt) => {
   updateUserAvatar(avatarInput.value)
     .then((updatedData) => {
       profileAvatar.style.backgroundImage = `url(${updatedData.avatar})`;
-
-      avatarForm.reset();
       
       closeModalWindow(avatarFormModalWindow);
     })
@@ -215,19 +172,19 @@ const handleCardFormSubmit = (evt) => {
 
   addNewCard(cardNameInput.value, cardLinkInput.value)
     .then((newCardData) => {
+      const currentUserId = newCardData.owner._id;
       placesWrap.prepend(
-        createCardElementWithInfo(
+        createCardElement(
           newCardData,
           {
             onPreviewPicture: handlePreviewPicture,
-            onLikeIcon: (likeButton) => handleLikeClick(likeButton, newCardData._id),
+            onLikeIcon: (likeButton) => handleLikeClick(likeButton, newCardData._id, currentUserId),
             onDeleteCard: (cardElement) => handleDeleteClick(cardElement, newCardData._id),
             onInfoClick: handleCardInfoClick
-          }
+          },
+          currentUserId
         )
       );
-
-      cardForm.reset();
       
       closeModalWindow(cardFormModalWindow);
     })
@@ -271,11 +228,11 @@ Promise.all([getUserInfo(), getCardList()])
 
     cards.forEach((data) => {
       placesWrap.append(
-        createCardElementWithInfo(
+        createCardElement(
           data, 
           {
             onPreviewPicture: handlePreviewPicture,
-            onLikeIcon: (likeButton) => handleLikeClick(likeButton, data._id),
+            onLikeIcon: (likeButton) => handleLikeClick(likeButton, data._id, userData._id),
             onDeleteCard: (cardElement) => handleDeleteClick(cardElement, data._id),
             onInfoClick: handleCardInfoClick
           },
@@ -295,6 +252,7 @@ const allPopups = document.querySelectorAll(".popup");
 allPopups.forEach((popup) => {
   setCloseModalWindowEventListeners(popup);
 });
+
 
 
 
