@@ -68,7 +68,7 @@ const handleCardInfoClick = (cardId) => {
         day: "numeric",
         month: "long",
         year: "numeric",
-      }) + " г.";
+      });
 
       const dlContainer = cardInfoModalWindow.querySelector(".popup__info");
       const h4Title = cardInfoModalWindow.querySelector(".popup__text");
