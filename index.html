@@ -33,7 +33,7 @@
         <p class="footer__copyright">© 2026 Mesto Russia</p>
       </footer>
 
-      <div class="popup popup_type_edit">
+      <div class="popup popup_type_edit popup_is-animated">
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      <div class="popup popup_type_new-card">
+      <div class="popup popup_type_new-card popup_is-animated">
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Новое место</h3>
@@ -120,7 +120,7 @@
         </div>
       </div>
 
-      <div class="popup popup_type_image">
+      <div class="popup popup_type_image popup_is-animated">
         <div class="popup__content popup__content_content_image">
           <button type="button" class="popup__close"></button>
           <img src="" alt="" class="popup__image" />
@@ -128,7 +128,7 @@
         </div>
       </div>
 
-      <div class="popup popup_type_edit-avatar">
+      <div class="popup popup_type_edit-avatar popup_is-animated">
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Обновить аватар</h3>
@@ -164,11 +164,7 @@
           <ul class="popup__list"></ul>
         </div>
       </div>
-
-          <h4 class="popup__text">Лайкнули:</h4>
-          <ul class="popup__list popup__info-liked-by"></ul>
-        </div>
-      </div>
+    </div>
 
     <template id="card-template">
       <li class="places__item card">
@@ -185,6 +181,17 @@
           </div>
         </div>
       </li>
+    </template>
+
+    <template id="popup-info-definition-template">
+      <div class="popup__info-item">
+        <dt class="popup__info-term"></dt>
+        <dd class="popup__info-description"></dd>
+      </div>
+    </template>
+
+    <template id="popup-info-user-preview-template">
+      <li class="popup__list-item popup__list-item_type_badge"></li>
     </template>
   </body>
 </html>
