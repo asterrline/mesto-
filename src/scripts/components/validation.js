@@ -22,7 +22,7 @@ function toggleButtonState(inputList, buttonElement, settings) {
   }
 }
 
-function showInputError(formElement, inputElement, errorMessage, settings) {
+export function showInputError(formElement, inputElement, errorMessage, settings) {
   const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
   inputElement.classList.add(settings.inputErrorClass);
   if (errorElement) {
