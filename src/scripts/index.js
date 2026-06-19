@@ -40,11 +40,6 @@ const avatarForm = avatarFormModalWindow.querySelector(".popup__form");
 const avatarInput = avatarForm.querySelector(".popup__input");
 
 const cardInfoModalWindow = document.querySelector(".popup_type_info");
-const infoDescription = cardInfoModalWindow.querySelector(".popup__info-description");
-const infoDate = cardInfoModalWindow.querySelector(".popup__info-date");
-const infoOwner = cardInfoModalWindow.querySelector(".popup__info-owner");
-const infoLikesCount = cardInfoModalWindow.querySelector(".popup__info-likes-count");
-const infoLikedByList = cardInfoModalWindow.querySelector(".popup__info-liked-by");
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -138,7 +133,6 @@ const handleLikeClick = (likeButton, cardId, userId) => {
   changeLikeCardStatus(cardId, isLiked)
     .then((updatedCardData) => {
       const cardElement = likeButton.closest(".card");
-      
       likeCard(cardElement, updatedCardData, userId);
     })
     .catch((err) => {
@@ -183,11 +177,11 @@ const handleAvatarFromSubmit = (evt) => {
   updateUserAvatar(avatarInput.value)
     .then((updatedData) => {
       profileAvatar.style.backgroundImage = `url(${updatedData.avatar})`;
-      
       closeModalWindow(avatarFormModalWindow);
     })
     .catch((err) => {
       console.error(err);
+      showInputError(avatarForm, avatarInput, "Не удалось загрузить изображение. Проверьте ссылку.", validationConfig);
     })
     .finally(() => {
       renderLoading(false, submitButton);
@@ -214,11 +208,11 @@ const handleCardFormSubmit = (evt) => {
           currentUserId
         )
       );
-      
       closeModalWindow(cardFormModalWindow);
     })
     .catch((err) => {
       console.error(err);
+      showInputError(cardForm, cardLinkInput, "Не удалось загрузить изображение. Проверьте ссылку.", validationConfig);
     })
     .finally(() => {
       renderLoading(false, submitButton, "Создать");
