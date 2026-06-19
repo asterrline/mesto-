@@ -73,39 +73,74 @@ const handleCardInfoClick = (cardId) => {
         day: "numeric",
         month: "long",
         year: "numeric",
-      });
+      }) + " г.";
 
-      if (infoDescription) infoDescription.textContent = targetCard.name || "—";
-      if (infoDate) infoDate.textContent = formattedDate;
-      if (infoOwner) infoOwner.textContent = targetCard.owner ? targetCard.owner.name : "Неизвестен";
-      if (infoLikesCount) infoLikesCount.textContent = targetCard.likes ? targetCard.likes.length : 0;
+      const dlContainer = cardInfoModalWindow.querySelector(".popup__info");
+      const h4Title = cardInfoModalWindow.querySelector(".popup__text");
+      const ulList = cardInfoModalWindow.querySelector(".popup__list");
 
-      const infoItems = [infoDescription, infoDate, infoOwner, infoLikesCount];
-      infoItems.forEach(node => {
-        if (node) {
-          node.style.display = "inline";
-          node.style.marginLeft = "8px"; 
-        }
-      });
+      if (dlContainer && !cardInfoModalWindow.querySelector(".popup__info-item")) {
+        dlContainer.innerHTML = "";
+        ulList.innerHTML = "";
+        
+        const infoTemplate = document.querySelector("#popup-info-definition-template").content;
 
-      if (infoLikedByList) {
-        infoLikedByList.innerHTML = "";
+        const infoData = [
+          { term: "Описание:", desc: targetCard.name || "—" },
+          { term: "Дата создания:", desc: formattedDate },
+          { term: "Владелец:", desc: targetCard.owner ? targetCard.owner.name : "Неизвестен" },
+          { term: "Количество лайков:", desc: targetCard.likes ? targetCard.likes.length : 0 }
+        ];
 
+        infoData.forEach(item => {
+          const infoElement = infoTemplate.cloneNode(true);
+          const termNode = infoElement.querySelector(".popup__info-term");
+          const descNode = infoElement.querySelector(".popup__info-description");
+
+          termNode.textContent = item.term;
+          descNode.textContent = item.desc;
+
+          descNode.style.display = "inline";
+          descNode.style.marginLeft = "8px";
+
+          dlContainer.appendChild(infoElement);
+        });
+      } 
+      else {
+        if (infoDescription) infoDescription.textContent = targetCard.name || "—";
+        if (infoDate) infoDate.textContent = formattedDate;
+        if (infoOwner) infoOwner.textContent = targetCard.owner ? targetCard.owner.name : "Неизвестен";
+        if (infoLikesCount) infoLikesCount.textContent = targetCard.likes ? targetCard.likes.length : 0;
+
+        [infoDescription, infoDate, infoOwner, infoLikesCount].forEach(node => {
+          if (node) {
+            node.style.display = "inline";
+            node.style.marginLeft = "8px";
+          }
+        });
+      }
+
+      if (ulList) {
+        ulList.innerHTML = "";
+        
         if (targetCard.likes && targetCard.likes.length > 0) {
+          if (h4Title) h4Title.textContent = "Лайкнули:";
+          
           const badgeTemplate = document.querySelector("#popup-info-user-preview-template").content;
 
           targetCard.likes.forEach(user => {
             const badgeElement = badgeTemplate.cloneNode(true);
             const li = badgeElement.querySelector(".popup__list-item_type_badge");
             li.textContent = user.name;
-            infoLikedByList.appendChild(badgeElement);
+            ulList.appendChild(badgeElement);
           });
         } else {
+          if (h4Title) h4Title.textContent = "Лайкнули:";
           const noLikesMessage = document.createElement("li");
           noLikesMessage.style.color = "#666";
           noLikesMessage.style.listStyle = "none";
           noLikesMessage.textContent = "Пока никто не лайкнул";
-          infoLikedByList.appendChild(noLikesMessage);
+          ulList.appendChild(noLikesMessage);
         }
       }
 
