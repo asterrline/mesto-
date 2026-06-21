@@ -215,7 +215,6 @@ const handleCardFormSubmit = (evt) => {
 };
 
 //сейчас ошибка от аватар сабмит и кард форм сабмит будет выводится только в консоль, чтобы выводилась в интерфейче надо добавить setServerValidationError(avatarForm, avatarInput, "Не удалось загрузить изображение. Проверьте ссылку."); и setServerValidationError(cardForm, cardLinkInput, "Не удалось загрузить изображение. Проверьте ссылку."); после консол еррора
-// примите пж работу 🙏🙏🙏😭😭😭
 
 // EventListeners
 profileForm.addEventListener("submit", handleProfileFormSubmit);
