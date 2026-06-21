@@ -8,7 +8,7 @@
 
 import "../pages/index.css";
 import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, changeLikeCardStatus } from "./components/api.js";
-import { enableValidation, clearValidation, showInputError } from "./components/validation.js";
+import { enableValidation, clearValidation } from "./components/validation.js"; // Убрали лишний импорт showInputError
 import { createCardElement, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 
@@ -48,6 +48,15 @@ const validationConfig = {
   inactiveButtonClass: "popup__button_disabled",
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__error_visible"
+};
+
+const setServerValidationError = (formElement, inputElement, errorMessage) => {
+  const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
+  inputElement.classList.add(validationConfig.inputErrorClass);
+  if (errorElement) {
+    errorElement.textContent = errorMessage;
+    errorElement.classList.add(validationConfig.errorClass);
+  }
 };
 
 const handlePreviewPicture = ({ name, link }) => {
@@ -181,7 +190,7 @@ const handleAvatarFromSubmit = (evt) => {
     })
     .catch((err) => {
       console.error(err);
-      showInputError(avatarForm, avatarInput, "Не удалось загрузить изображение. Проверьте ссылку.", validationConfig);
+      setServerValidationError(avatarForm, avatarInput, "Не удалось загрузить изображение. Проверьте ссылку.");
     })
     .finally(() => {
       renderLoading(false, submitButton);
@@ -212,7 +221,7 @@ const handleCardFormSubmit = (evt) => {
     })
     .catch((err) => {
       console.error(err);
-      showInputError(cardForm, cardLinkInput, "Не удалось загрузить изображение. Проверьте ссылку.", validationConfig);
+      setServerValidationError(cardForm, cardLinkInput, "Не удалось загрузить изображение. Проверьте ссылку.");
     })
     .finally(() => {
       renderLoading(false, submitButton, "Создать");
@@ -270,7 +279,6 @@ Promise.all([getUserInfo(), getCardList()])
 
 enableValidation(validationConfig);
 
-//настраиваем обработчики закрытия попапов
 const allPopups = document.querySelectorAll(".popup");
 allPopups.forEach((popup) => {
   setCloseModalWindowEventListeners(popup);
