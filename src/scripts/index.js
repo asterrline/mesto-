@@ -50,15 +50,6 @@ const validationConfig = {
   errorClass: "popup__error_visible"
 };
 
-const setServerValidationError = (formElement, inputElement, errorMessage) => {
-  const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
-  inputElement.classList.add(validationConfig.inputErrorClass);
-  if (errorElement) {
-    errorElement.textContent = errorMessage;
-    errorElement.classList.add(validationConfig.errorClass);
-  }
-};
-
 const handlePreviewPicture = ({ name, link }) => {
   imageElement.src = link;
   imageElement.alt = name;
@@ -136,12 +127,9 @@ const renderLoading = (isLoading, buttonElement, defaultText = "Сохранит
   }
 };
 
-const handleLikeClick = (likeButton, cardId, userId) => {
-  const isLiked = likeButton.classList.contains("card__like-button_is-active");
-
+const handleLikeClick = (cardElement, isLiked, cardId, userId) => {
   changeLikeCardStatus(cardId, isLiked)
     .then((updatedCardData) => {
-      const cardElement = likeButton.closest(".card");
       likeCard(cardElement, updatedCardData, userId);
     })
     .catch((err) => {
@@ -190,7 +178,6 @@ const handleAvatarFromSubmit = (evt) => {
     })
     .catch((err) => {
       console.error(err);
-      setServerValidationError(avatarForm, avatarInput, "Не удалось загрузить изображение. Проверьте ссылку.");
     })
     .finally(() => {
       renderLoading(false, submitButton);
@@ -210,7 +197,7 @@ const handleCardFormSubmit = (evt) => {
           newCardData,
           {
             onPreviewPicture: handlePreviewPicture,
-            onLikeIcon: (likeButton) => handleLikeClick(likeButton, newCardData._id, currentUserId),
+            onLikeIcon: (cardElement, isLiked) => handleLikeClick(cardElement, isLiked, newCardData._id, currentUserId),
             onDeleteCard: (cardElement) => handleDeleteClick(cardElement, newCardData._id),
             onInfoClick: handleCardInfoClick
           },
@@ -221,12 +208,14 @@ const handleCardFormSubmit = (evt) => {
     })
     .catch((err) => {
       console.error(err);
-      setServerValidationError(cardForm, cardLinkInput, "Не удалось загрузить изображение. Проверьте ссылку.");
     })
     .finally(() => {
       renderLoading(false, submitButton, "Создать");
     });
 };
+
+//сейчас ошибка от аватар сабмит и кард форм сабмит будет выводится только в консоль, чтобы выводилась в интерфейче надо добавить setServerValidationError(avatarForm, avatarInput, "Не удалось загрузить изображение. Проверьте ссылку."); и setServerValidationError(cardForm, cardLinkInput, "Не удалось загрузить изображение. Проверьте ссылку."); после консол еррора
+// примите пж работу 🙏🙏🙏😭😭😭
 
 // EventListeners
 profileForm.addEventListener("submit", handleProfileFormSubmit);
@@ -264,7 +253,7 @@ Promise.all([getUserInfo(), getCardList()])
           data, 
           {
             onPreviewPicture: handlePreviewPicture,
-            onLikeIcon: (likeButton) => handleLikeClick(likeButton, data._id, userData._id),
+            onLikeIcon: (cardElement, isLiked) => handleLikeClick(cardElement, isLiked, data._id, userData._id),
             onDeleteCard: (cardElement) => handleDeleteClick(cardElement, data._id),
             onInfoClick: handleCardInfoClick
           },
@@ -284,6 +273,16 @@ const allPopups = document.querySelectorAll(".popup");
 allPopups.forEach((popup) => {
   setCloseModalWindowEventListeners(popup);
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
