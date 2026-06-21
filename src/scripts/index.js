@@ -8,7 +8,7 @@
 
 import "../pages/index.css";
 import { getUserInfo, getCardList, updateUserInfo, addNewCard, deleteCardFromServer, updateUserAvatar, changeLikeCardStatus } from "./components/api.js";
-import { enableValidation, clearValidation } from "./components/validation.js"; // Убрали лишний импорт showInputError
+import { enableValidation, clearValidation } from "./components/validation.js";
 import { createCardElement, deleteCard, likeCard } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 
@@ -279,6 +279,7 @@ Promise.all([getUserInfo(), getCardList()])
 
 enableValidation(validationConfig);
 
+//настраиваем обработчики закрытия попапов
 const allPopups = document.querySelectorAll(".popup");
 allPopups.forEach((popup) => {
   setCloseModalWindowEventListeners(popup);
