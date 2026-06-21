@@ -20,7 +20,7 @@ export const deleteCard = (cardElement) => {
 
 const getTemplate = () => {
   return document
-    .querySelector("#card-template") // Используем селектор id, как в html
+    .querySelector("#card-template")
     .content.querySelector(".card")
     .cloneNode(true);
 };
@@ -48,7 +48,10 @@ export const createCardElement = (
   }
 
   if (onLikeIcon) {
-    likeButton.addEventListener("click", () => onLikeIcon(likeButton));
+    likeButton.addEventListener("click", () => {
+      const isLiked = likeButton.classList.contains("card__like-button_is-active");
+      onLikeIcon(cardElement, isLiked); 
+    });
   }
 
   if (onDeleteCard) {
